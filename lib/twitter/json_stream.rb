@@ -17,8 +17,8 @@ module Twitter
     AF_RECONNECT_START = 10
     AF_RECONNECT_MUL   = 2
 
-    RECONNECT_MAX   = 320
-    RETRIES_MAX     = 20
+    RECONNECT_MAX   = 3200
+    RETRIES_MAX     = 200
 
     DEFAULT_OPTIONS = {
       :method         => 'GET',
