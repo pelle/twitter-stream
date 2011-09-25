@@ -18,7 +18,7 @@ module Twitter
     AF_RECONNECT_MUL   = 2
 
     RECONNECT_MAX   = 320
-    RETRIES_MAX     = 10
+    RETRIES_MAX     = 20
 
     DEFAULT_OPTIONS = {
       :method         => 'GET',
@@ -119,6 +119,9 @@ module Twitter
     # HTTP parser which then drives subsequent callbacks.
     def receive_data(data)
       @parser << data
+    rescue
+      #
+      puts "Couldn't parse: #{data}" # Temporary error message. Don't quit, until I figure out what is going on
     end
 
     def connection_completed
@@ -134,10 +137,12 @@ module Twitter
     def schedule_reconnect
       timeout = reconnect_timeout
       @reconnect_retries += 1
+      # I'm getting strange disconnects. forcing reconnect for now
+      puts "schedule_reconnect: timeout = #{timeout}, @reconnect_retries = #{@reconnect_retries}"
       if timeout <= RECONNECT_MAX && @reconnect_retries <= RETRIES_MAX
         reconnect_after(timeout)
       else
-        @max_reconnects_callback.call(timeout, @reconnect_retries) if @max_reconnects_callback
+       @max_reconnects_callback.call(timeout, @reconnect_retries) if @max_reconnects_callback
       end
     end
 
